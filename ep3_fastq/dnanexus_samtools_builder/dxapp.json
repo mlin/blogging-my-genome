@@ -1,0 +1,31 @@
+{
+  "name": "dnanexus_samtools_builder",
+  "title": "dnanexus_samtools_builder",
+  "summary": "dnanexus_samtools_builder",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "categories": [],
+  "inputSpec": [],
+  "outputSpec": [
+    {
+      "name": "samtools",
+      "class": "file"
+    }
+  ],
+  "runSpec": {
+    "execDepends": [{"name": "libncurses5-dev"},
+                    {"name": "libjemalloc-dev"},
+                    {"name": "libsnappy-dev"},
+                    {"name": "libbz2-dev"},
+                    {"name": "zlib1g-dev"},
+                    {"name": "wget"}],
+    "interpreter": "bash",
+    "file": "src/dnanexus_samtools_builder.sh"
+  },
+  "access": {
+    "network": [
+      "*"
+    ]
+  },
+  "authorizedUsers": []
+}
