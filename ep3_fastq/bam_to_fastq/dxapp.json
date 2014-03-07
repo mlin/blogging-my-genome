@@ -6,17 +6,10 @@
   "resources": [],
   "inputSpec": [
     {
-      "name": "input_bam",
-      "label": "SAM/BAM File",
+      "name": "bam",
+      "label": "BAM File",
       "class": "file",
       "optional": false
-    },
-    {
-      "name": "paired",
-      "label": "paired",
-      "class": "boolean",
-      "optional": true,
-      "default": true
     },
     {
       "name": "params",
@@ -28,30 +21,23 @@
   ],
   "outputSpec": [
     {
-      "name": "fastq_file",
-      "label": "Fastq File",
-      "class": "file"
-    },
-    {
-      "name": "paired_fastq_file",
-      "label": "Paired Fastq File",
-      "optional": true,
-      "class": "file"
+      "name": "fastq",
+      "label": "FASTQ File(s)",
+      "class": "array:file"
     }
   ],
   "runSpec": {
-    "interpreter": "python2.7",
-    "file": "src/picard_sam_to_fastq.py",
+    "interpreter": "bash",
+    "file": "src/bam_to_fastq.sh",
     "execDepends": [{"name": "openjdk-6-jre-headless"},
                     {"name": "libncurses5"},
                     {"name": "libjemalloc1"},
                     {"name": "libsnappy1"},
                     {"name": "libbz2-1.0"},
-                    {"name": "pigz"}]
+                    {"name": "pigz"}],
+    "systemRequirements": {"main": {"instanceType": "dx_m1.xlarge"}}
   },
   "access": {
-    "network": [
-      "*"
-    ]
+    "network": ["*"]
   }
 }
