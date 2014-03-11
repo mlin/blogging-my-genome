@@ -1,0 +1,35 @@
+{
+  "name": "bam_info",
+  "title": "BAM info",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "resources": [],
+  "inputSpec": [
+    {
+      "name": "bam",
+      "label": "BAM File",
+      "class": "file",
+      "optional": false
+    },
+    {
+      "name": "params",
+      "label": "Parameters",
+      "class": "string",
+      "optional": true,
+      "default": ""
+    }
+  ],
+  "outputSpec": [],
+  "runSpec": {
+    "interpreter": "bash",
+    "file": "src/bam_info.sh",
+    "execDepends": [{"name": "openjdk-6-jre-headless"},
+                    {"name": "libncurses5"},
+                    {"name": "libjemalloc1"},
+                    {"name": "libsnappy1"},
+                    {"name": "libbz2-1.0"}]
+  },
+  "access": {
+    "network": ["*"]
+  }
+}
