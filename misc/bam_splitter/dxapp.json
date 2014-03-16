@@ -1,0 +1,43 @@
+{
+  "name": "bam_splitter",
+  "title": "BAM splitter",
+  "summary": "Split BAM by target sequences",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "resources": [],
+  "inputSpec": [
+    {
+      "name": "bam",
+      "label": "BAM File",
+      "class": "file",
+      "patterns": ["*.bam"],
+      "optional": false
+    },
+    {
+      "name": "bai",
+      "label": "BAM Index File",
+      "class": "file",
+      "patterns": ["*.bai"],
+      "optional": true
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "bams",
+      "label": "BAM Files",
+      "class": "array:file"
+    }
+  ],
+  "runSpec": {
+    "interpreter": "bash",
+    "file": "src/bam_splitter.sh",
+    "execDepends": [{"name": "libncurses5"},
+                    {"name": "libjemalloc1"},
+                    {"name": "libsnappy1"},
+                    {"name": "libbz2-1.0"},
+                    {"name": "pigz"}]
+  },
+  "access": {
+    "network": ["*"]
+  }
+}
