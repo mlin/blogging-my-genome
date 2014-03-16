@@ -1,0 +1,28 @@
+OASISFormat: 0.4
+Name:        huniq
+Version:     0.0.1
+Synopsis:    Hash-based uniq utility not requiring sorted input lines
+Authors:     Mike Lin
+Maintainers: mlin@mlin.net
+License:     MIT
+Plugins:     DevFiles (0.4)
+
+Executable huniq
+  Path:           .
+  BuildTools:     ocamlbuild
+  BuildDepends:   batteries
+  MainIs:         huniq.ml
+  CompiledObject: best
+  
+Executable huniq_tests
+  Path:           .
+  MainIs:         huniq_tests.ml
+  Install:        false
+  Build$:         flag(tests)
+  BuildTools:     ocamlbuild
+  BuildDepends:   batteries,oUnit,should
+  CompiledObject: best
+
+Test test
+  TestTools:    huniq_tests
+  Command:      $huniq_tests

@@ -1,0 +1,27 @@
+# OASIS_START
+# DO NOT EDIT (digest: 7db43f4a81942fdc9f1651ca38249d71)
+# Ignore VCS directories, you can use the same kind of rule outside
+# OASIS_START/STOP if you want to exclude directories that contains
+# useless stuff for the build process
+<**/.svn>: -traverse
+<**/.svn>: not_hygienic
+".bzr": -traverse
+".bzr": not_hygienic
+".hg": -traverse
+".hg": not_hygienic
+".git": -traverse
+".git": not_hygienic
+"_darcs": -traverse
+"_darcs": not_hygienic
+# Executable huniq
+<huniq.{native,byte}>: pkg_batteries
+# Executable huniq_tests
+<huniq_tests.{native,byte}>: pkg_batteries
+<huniq_tests.{native,byte}>: pkg_oUnit
+<huniq_tests.{native,byte}>: pkg_should
+<*.ml{,i}>: pkg_batteries
+<*.ml{,i}>: pkg_oUnit
+<*.ml{,i}>: pkg_should
+# OASIS_STOP
+<*.ml{,i}>: pp(ocaml+twt)
+
