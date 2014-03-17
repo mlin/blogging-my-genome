@@ -1,0 +1,39 @@
+Blogging My Genome: BAM coverage
+========================================================
+
+```{r echo=FALSE, results='hide',message=FALSE}
+library(ggplot2)
+```
+
+Load the product of the bedtools_genomecov applet applied to the BAM file:
+
+```{r}
+genomecov <- read.delim("~/Downloads/C2K.deduplicated.genomecov",header=FALSE)
+colnames(genomecov) <- c("tseq","cov","count","tlen","tseqfrac")
+genomecov <- genomecov[genomecov$tseq == 'genome',]
+```
+
+Calculate CDF and 1-CDF for genome coverage:
+```{r}
+genomecov_cdf <- cumsum(as.numeric(genomecov$count))/(genomecov$tlen[1])
+genomecov <- cbind(genomecov,data.frame(ccdf=(1-genomecov_cdf)))
+```
+
+Load the product of the bedtools_coverage applet applied to the BAM file and merged CCDS exons:
+
+```{r}
+ccdscov <- read.delim(gzfile("~/Downloads/C2K.deduplicated.feature_basewise_coverage.gz"),header=FALSE)
+ccdscov <- ccdscov[,1]
+```
+
+Calculate CDF for CCDS coverage:
+```{r}
+ccdscov_cdf <- ecdf(ccdscov)
+```
+
+Plot:
+```{r fig.width=8,fig.height=6}
+plot(genomecov$cov,genomecov$ccdf,type='l',xlim=c(0,80),ylim=c(0,1),xlab='fold-coverage',ylab='1-CDF',main='Basewise Mapping Coverage')
+lines(genomecov$cov,1-ccdscov_cdf(genomecov$cov),col='blue')
+legend(50,1.0,c("hs37d5 complete assembly","Consensus CDS exons"),fill=c("black","blue"),box.lwd=0)
+```
