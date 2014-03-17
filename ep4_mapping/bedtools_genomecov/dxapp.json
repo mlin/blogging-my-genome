@@ -1,0 +1,27 @@
+{
+  "name": "bedtools_genomecov",
+  "title": "BEDTools genome coverage",
+  "summary": "Report BAM mappings coverage of the reference assembly",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "categories": [],
+  "inputSpec": [
+    {
+      "name": "bam",
+      "class": "file",
+      "patterns": ["*.bam"],
+      "optional": false
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "report",
+      "class": "file"
+    }
+  ],
+  "runSpec": {
+    "interpreter": "bash",
+    "file": "src/bedtools_genomecov.sh"
+  },
+  "authorizedUsers": []
+}

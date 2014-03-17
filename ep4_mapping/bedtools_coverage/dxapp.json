@@ -1,0 +1,33 @@
+{
+  "name": "bedtools_coverage",
+  "title": "BEDTools coverage",
+  "summary": "Report BAM mappings coverage of genomic features (basewise)",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "categories": [],
+  "inputSpec": [
+    {
+      "name": "bam",
+      "class": "file",
+      "patterns": ["*.bam"],
+      "optional": false
+    },
+    {
+      "name": "features",
+      "class": "file",
+      "patterns": ["*.bed","*.bed.gz","*.gff","*.gff.gz"],
+      "optional": false
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "report",
+      "class": "file"
+    }
+  ],
+  "runSpec": {
+    "interpreter": "bash",
+    "file": "src/bedtools_coverage.sh"
+  },
+  "authorizedUsers": []
+}
