@@ -10,6 +10,11 @@ bam_info() {
 
     echo "
 
+-- COUNT mapQ > 0"
+    cat input.bam | pigz -dc | /samtools view -q 1 -c -
+
+    echo "
+
 -- COUNTS BY READ GROUP"
 
     # list read groups
