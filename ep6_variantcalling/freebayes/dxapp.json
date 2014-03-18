@@ -1,0 +1,87 @@
+{
+  "name": "freebayes",
+  "title": "FreeBayes Variant Caller",
+  "summary": "Calls variants (SNPs, indels, and other events) using FreeBayes",
+  "version": "1.0.3",
+  "inputSpec": [
+    {
+      "name": "sorted_bams",
+      "label": "Sorted mappings",
+      "help": "One or more coordinate-sorted BAM files containing mappings to call variants for.",
+      "class": "array:file",
+      "patterns": ["*.bam"]
+    },
+    {
+      "name": "genome_fastagz",
+      "label": "Genome",
+      "help": "A file, in gzipped FASTA format, with the reference genome that the reads were mapped against.",
+      "class": "file",
+      "patterns": ["*.fa.gz", "*.fasta.gz"],
+      "suggestions": [
+        {
+          "name": "GRCh38",
+          "project": "project-B6JG85Z2J35vb6Z7pQ9Q02j8",
+          "path": "/human.genome/grch38"
+        },
+        {
+          "name": "GRCh37/hs37d5 (1000G Phase II)",
+          "project": "project-B6JG85Z2J35vb6Z7pQ9Q02j8",
+          "path": "/human.genome/1000genomes_phase2_hs37d5"
+        },
+        {
+          "name": "GRCh37/b37 (1000G Phase I)",
+          "project": "project-B6JG85Z2J35vb6Z7pQ9Q02j8",
+          "path": "/human.genome/1000genomes_phase1_b37"
+        },
+        {
+          "name": "UCSC hg19",
+          "project": "project-B6JG85Z2J35vb6Z7pQ9Q02j8",
+          "path": "/human.genome/ucsc_hg19"
+        },
+        {
+          "name": "Ion Torrent hg19",
+          "project": "project-B6JG85Z2J35vb6Z7pQ9Q02j8",
+          "path": "/human.genome/ion_torrent_hg19"
+        }
+      ]
+    },
+    {
+      "name": "advanced_options",
+      "label": "Advanced command line options",
+      "help": "Advanced command line options that will be supplied directly to the FreeBayes program.",
+      "class": "string",
+      "optional": true,
+      "group": "Advanced"
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "variants_vcfgz",
+      "label": "Variants",
+      "help": "A bgzipped VCF file with the called variants.",
+      "class": "file",
+      "patterns": ["*.vcf.gz"]
+    }
+  ],
+  "runSpec": {
+    "interpreter": "bash",
+    "file": "src/script.sh",
+    "systemRequirements": {
+      "main": {
+        "instanceType": "dx_c3.2xlarge"
+      }
+    },
+    "execDepends": [{"name": "moreutils"}]
+  },
+  "categories": [
+    "Variation Calling"
+  ],
+  "details": {
+    "upstreamVersion": "0.9.9",
+    "upstreamAuthor": "Erik Garrison",
+    "upstreamUrl": "https://github.com/ekg/freebayes",
+    "upstreamLicenses": ["MIT License"],
+    "citations": ["arXiv:1207.3907"],
+    "whatsNew": "* 1.0.3: Added GRCh38 to suggestions\n* 1.0.2: Output is now bgzipped"
+  }
+}
