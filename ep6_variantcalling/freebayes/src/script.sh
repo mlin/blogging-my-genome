@@ -1,6 +1,12 @@
 #!/bin/bash
 
 main() {
+	# unpack vcftools
+	echo "Unpacking vcftools"
+	mkdir -p /usr/local/vcftools
+	sh -c "cd /usr/local/vcftools && tar xf /tmp/vcftools_built.tar"
+	export PERL5LIB=/usr/local/vcftools/perl
+
 	#
 	# Fetch and index genome
 	#
@@ -18,24 +24,30 @@ main() {
 	  dx download "${sorted_bams[$i]}" -o "input-$i.bam"
 	  samtools index "input-$i.bam"
 	  input="$input -b input-$i.bam"
-	  samtools view -H "input-$i.bam" | awk -v OFS="\t" '$1 == "@SQ" {split($2,a,":"); split($3,b,":"); print a[2], b[2]; }' >> /tmp/tseqs.raw
 	done
 
-	# for parallelization: make list of target sequences in order of
+	# for parallelization: make list of reference sequences in order of
 	# decreasing size
-	sort -nr -k 2,2 /tmp/tseqs.raw | cut -f1 | huniq > /tmp/tseqs
+	# TODO: even better would be order of decreasing mapped reads, which
+	#       we could get from 'samtools idxstat'
+	sort -k 2rn,2rn genome.fa.fai | cut -f1 > /tmp/rseqs
 
 	sleep 1
-	echo "Target sequences:"
-	cat /tmp/tseqs
+	echo "Reference sequences:"
+	cat /tmp/rseqs
 	sleep 1
 
 	#
 	# Run freebayes
 	#
 	echo "Executing parallel freebayes"
-	xargs -a /tmp/tseqs -n 1 -P 8 -r -I XXX --verbose \
+	xargs -a /tmp/rseqs -n 1 -P 8 -r -I XXX --verbose \
 		freebayes $input -v XXX.vcf -f genome.fa -r XXX $advanced_options
+
+	ls -1sh *.vcf
+
+	# for vcf-concat: make ordered list of .vcf file names
+	cut -f1 genome.fa.fai | awk '{printf("%s.vcf\n",$0)}' > /tmp/rseqs.vcfs
 
 	#
 	# Upload results
@@ -44,6 +56,6 @@ main() {
 	name="${name%.bam}"
 
 	echo "Uploading results"
-	file_id=`cat /tmp/tseqs.raw | cut -f1 | huniq | xargs -I XXX cat XXX.vcf | bgzip -c | dx upload -o "$name.vcf.gz" --brief -`
+	file_id=`xargs -a /tmp/rseqs.vcfs -n 999999 /usr/local/vcftools/bin/vcf-concat | bgzip -c | dx upload -o "$name.vcf.gz" --brief -`
 	dx-jobutil-add-output "variants_vcfgz" "$file_id"
 }
