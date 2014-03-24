@@ -1,0 +1,41 @@
+ALDH2*2 geographical distribution
+========================================================
+
+Reproduction of Figure 1 of [Li et al. (2009, PMID 19456322)](http://onlinelibrary.wiley.com/doi/10.1111/j.1469-1809.2009.00517.x/full)
+
+Download Table S1: [AHG_517_sm_TableS1.xls](http://onlinelibrary.wiley.com/store/10.1111/j.1469-1809.2009.00517.x/asset/supinfo/AHG_517_sm_TableS1.xls?v=1&s=7dfc563481db0167f59bc061e992d590409d207b)
+
+Read in raw data:
+
+```{r message=FALSE}
+library(ggplot2)
+library(gdata)
+li.xls <- read.xls("~/Downloads/AHG_517_sm_TableS1.xls")
+```
+
+Clean up the data:
+
+```{r}
+li.data <- li.xls[2:nrow(li.xls),]
+colnames(li.data) <- c("region","country","population","size","frequency","long","lat","mapped","reference")
+rownames(li.data) <- 1:nrow(li.data)
+
+li.data <- li.data[li.data$mapped == "Y",]
+li.data <- data.frame(frequency=as.numeric(as.character(li.data$frequency)),
+                      long=as.numeric(as.character(li.data$long)),
+                      lat=as.numeric(as.character(li.data$lat)))
+```
+
+Generate plot:
+
+```{r fig.width=10,fig.height=6,message=FALSE}
+library(maptools)
+data(wrld_simpl)
+
+li.longlat <- data.frame(long=li.data$long*10.6+49.25,lat=li.data$lat*8.8-5.4,MAF=li.data$frequency)
+li.longlat <- li.longlat[order(li.longlat$MAF),]
+
+ggplot(fortify(wrld_simpl), aes(long,lat,group=group)) + geom_polygon(fill="darkgrey") + geom_path() + coord_cartesian(xlim=c(70,150),ylim=c(15,55)) + geom_point(data=li.longlat, aes(long,lat,color=MAF,group=NA), size=4) + scale_color_gradient(low='white',high='red') + xlab('longitude') + ylab('latitude')
+```
+
+The affine transform of the Li data onto the coordinate system of wrld_simpl was found through visual trial-and-error. It's still off around the edges, and there's probably some kind of subtle difference in the map projection or something that I'm missing. Suggestions welcome; this was my first foray into GIS!
