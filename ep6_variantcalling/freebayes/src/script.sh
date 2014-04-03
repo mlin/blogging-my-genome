@@ -1,12 +1,6 @@
 #!/bin/bash
 
 main() {
-	# unpack vcftools
-	echo "Unpacking vcftools"
-	mkdir -p /usr/local/vcftools
-	sh -c "cd /usr/local/vcftools && tar xf /tmp/vcftools_built.tar"
-	export PERL5LIB=/usr/local/vcftools/perl
-
 	#
 	# Fetch and index genome
 	#
@@ -29,8 +23,10 @@ main() {
 	# for parallelization: make list of reference sequences in order of
 	# decreasing size
 	# TODO: even better would be order of decreasing mapped reads, which
-	#       we could get from 'samtools idxstat'
-	sort -k 2rn,2rn genome.fa.fai | cut -f1 > /tmp/rseqs
+	#       we could get from samtools idxstats...tricky with multiple
+	#       input bams, though.
+	( IFS=$'\n'; echo "${exclude_sequences[*]}" ) > /tmp/exclude_sequences
+	sort -k 2rn,2rn genome.fa.fai | cut -f1 | egrep -v -f /tmp/exclude_sequences > /tmp/rseqs
 
 	sleep 1
 	echo "Reference sequences:"
@@ -44,10 +40,11 @@ main() {
 	xargs -a /tmp/rseqs -n 1 -P 8 -r -I XXX --verbose \
 		freebayes $input -v XXX.vcf -f genome.fa -r XXX $advanced_options
 
+	echo "Results:"
 	ls -1sh *.vcf
 
-	# for vcf-concat: make ordered list of .vcf file names
-	cut -f1 genome.fa.fai | awk '{printf("%s.vcf\n",$0)}' > /tmp/rseqs.vcfs
+	# for vcfcombine: make ordered list of .vcf file names
+	cut -f1 genome.fa.fai | egrep -v -f /tmp/exclude_sequences | awk '{printf("%s.vcf\n",$0)}' > /tmp/rseqs.vcfs
 
 	#
 	# Upload results
@@ -56,6 +53,6 @@ main() {
 	name="${name%.bam}"
 
 	echo "Uploading results"
-	file_id=`xargs -a /tmp/rseqs.vcfs -n 999999 /usr/local/vcftools/bin/vcf-concat | bgzip -c | dx upload -o "$name.vcf.gz" --brief -`
+	file_id=`xargs -a /tmp/rseqs.vcfs -n 999999 vcfcombine | bgzip -c | dx upload -o "$name.vcf.gz" --brief -`
 	dx-jobutil-add-output "variants_vcfgz" "$file_id"
 }

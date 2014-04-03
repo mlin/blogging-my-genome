@@ -2,7 +2,7 @@
   "name": "freebayes",
   "title": "FreeBayes Variant Caller",
   "summary": "Calls variants (SNPs, indels, and other events) using FreeBayes",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "inputSpec": [
     {
       "name": "sorted_bams",
@@ -46,6 +46,14 @@
       ]
     },
     {
+      "name": "exclude_sequences",
+      "label": "Exclude reference sequences",
+      "help": "Array of egrep patterns specifying reference sequences to exclude from variant calling (e.g. decoy sequences, mitochondrial).",
+      "class": "array:string",
+      "optional": true,
+      "group": "Advanced"
+    },
+    {
       "name": "advanced_options",
       "label": "Advanced command line options",
       "help": "Advanced command line options that will be supplied directly to the FreeBayes program.",
@@ -71,17 +79,16 @@
         "instanceType": "dx_c3.2xlarge"
       }
     },
-    "execDepends": [{"name": "moreutils"}]
+    "execDepends": []
   },
   "categories": [
     "Variation Calling"
   ],
   "details": {
-    "upstreamVersion": "0.9.9",
+    "upstreamVersion": "0.9.14",
     "upstreamAuthor": "Erik Garrison",
     "upstreamUrl": "https://github.com/ekg/freebayes",
     "upstreamLicenses": ["MIT License"],
-    "citations": ["arXiv:1207.3907"],
-    "whatsNew": "* 1.0.3: Added GRCh38 to suggestions\n* 1.0.2: Output is now bgzipped"
+    "citations": ["arXiv:1207.3907"]
   }
 }

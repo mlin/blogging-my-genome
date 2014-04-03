@@ -1,0 +1,3 @@
+[submodule "ep6_variantcalling/freebayes/upstream"]
+	path = ep6_variantcalling/freebayes/upstream
+	url = https://github.com/ekg/freebayes.git
