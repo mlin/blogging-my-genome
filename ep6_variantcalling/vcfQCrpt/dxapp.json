@@ -1,0 +1,51 @@
+{
+  "name": "vcfQCrpt",
+  "title": "VCF QC Report",
+  "summary": "vcfQCrpt",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "categories": [
+    "Variation Calling"
+  ],
+  "inputSpec": [
+    {
+      "name": "vcfgz",
+      "class": "file",
+      "patterns": ["*.vcf.gz"],
+      "optional": false
+    },
+    {
+      "name": "Rlibs",
+      "class": "file",
+      "patterns": ["vcfQCrpt.Rlibs.tar.gz"],
+      "optional": true
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "html_report",
+      "class": "file"
+    },
+    {
+      "name": "Rlibs",
+      "class": "file",
+      "optional": true
+    }
+  ],
+  "runSpec": {
+    "interpreter": "bash",
+    "file": "src/vcfQCrpt.sh",
+    "execDepends": [{"name": "dx-r-bindings"}, {"name": "libxml2-dev"}],
+    "systemRequirements": {
+      "main": {
+        "instanceType": "mem3_hdd2_x8"
+      }
+    }
+  },
+  "access": {
+    "network": [
+      "*"
+    ]
+  },
+  "authorizedUsers": []
+}
