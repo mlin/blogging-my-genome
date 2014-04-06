@@ -6,9 +6,15 @@ Load variants on the canonical chromosomes (b37/hs37d5 chromosome naming assumed
 ```{r message=FALSE}
 library(VariantAnnotation)
 library(ggplot2)
-vcf <- readVcf("/input.vcf.gz","hs37d5")
+keep <- list()
+keep$fixed <- c("ALT","QUAL")
+keep$info <- c("TYPE","AF")
+keep$geno <- c("GT","DP","RO","AO")
+vcf <- readVcf("/input.vcf.gz","hs37d5",ScanVcfParam(fixed=keep$fixed,info=keep$info,geno=keep$geno))
 chroms <- c(as.character(1:22),"X","Y")
 vcf <- keepSeqlevels(vcf,chroms)
+
+cat("sites =", nrow(vcf), "alt. alleles =", sum(elementLengths(geno(vcf)$AO)))
 ```
 
 ## Quality distribution
@@ -20,15 +26,22 @@ qplot(qual(vcf), stat="ecdf", geom="step", xlim=c(0,2000), xlab="QUAL", ylab="CD
 ## Coverage distribution
 
 ```{r fig.width=6, fig.height=4, warning=FALSE}
-dp.dither <- runif(nrow(vcf),-0.5,0.5)
-qplot(info(vcf)$DP+dp.dither, stat="ecdf", geom="step", xlim=c(0,64), xlab="DP", ylab="CDF")
+qplot(as.vector(geno(vcf)$DP), stat="ecdf", geom="step", xlim=c(0,64), xlab="DP", ylab="CDF")
+```
+
+```{r fig.width=6, fig.height=4, warning=FALSE}
+qplot(unlist(geno(vcf)$AO), stat="ecdf", geom="step", xlim=c(0,64), xlab="AO", ylab="CDF")
 ```
 
 ## Quality vs. coverage
 
 ```{r fig.width=8, fig.height=5}
-vd <- data.frame(QUAL=qual(vcf),DP=info(vcf)$DP+dp.dither)
-ggplot(vd, aes(DP,QUAL)) + geom_bin2d(bins=64) + scale_fill_gradient(trans="sqrt") + xlim(0,64) + ylim(0,2000)
+my.expand <- function(vec,lengths) {
+  unlist(lapply(1:length(lengths),function (i) { rep(vec[i],lengths[i]) } ))
+}
+vd <- data.frame(QUAL=my.expand(qual(vcf),elementLengths(geno(vcf)$AO)),AO=unlist(geno(vcf)$AO))
+
+ggplot(vd, aes(AO,QUAL)) + geom_bin2d(bins=64) + scale_fill_gradient(trans="sqrt") + xlim(0,64) + ylim(0,2000)
 ```
 
 ## Overall metrics
@@ -37,13 +50,16 @@ Helper function to report metrics:
 
 ```{r}
 vcf.stats <- function(the.vcf) {
-  cat("N (biallelic) =", nrow(the.vcf), "\n")
+  cat("biallelic sites =", nrow(the.vcf), "\n")
   
   qq <- quantile(qual(the.vcf), probs=c(0.5,0.1,0.05,0.01))
   cat("QUAL: median =", qq[1], "pct10 =", qq[2], "pct5 =", qq[3], "pct1 =", qq[4], "\n")
   
-  dpq <- quantile(info(the.vcf)$DP, probs=c(0.5,0.1,0.05,0.01))
+  dpq <- quantile(as.vector(geno(the.vcf)$DP), probs=c(0.5,0.1,0.05,0.01))
   cat("DP: median =", dpq[1], "pct10 =", dpq[2], "pct5 =", dpq[3], "pct1 =", dpq[4], "\n")
+  
+  aoq <- quantile(unlist(geno(the.vcf)$AO), probs=c(0.5,0.1,0.05,0.01))
+  cat("AO: median =", aoq[1], "pct10 =", aoq[2], "pct5 =", aoq[3], "pct1 =", aoq[4], "\n")
   
   snvs <- as.character(as.list(info(the.vcf)$TYPE)) == "snp"
   snvs.het <- snvs & as.numeric(as.list(info(the.vcf)$AF)) == 0.5

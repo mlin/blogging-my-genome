@@ -38,7 +38,7 @@
     "execDepends": [{"name": "dx-r-bindings"}, {"name": "libxml2-dev"}],
     "systemRequirements": {
       "main": {
-        "instanceType": "mem3_hdd2_x8"
+        "instanceType": "mem3_hdd2_x2"
       }
     }
   },
