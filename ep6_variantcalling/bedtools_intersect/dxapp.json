@@ -1,0 +1,46 @@
+{
+  "name": "bedtools_intersect",
+  "title": "BEDTools intersect",
+  "summary": "Intersect BED/GFF/VCF/BAM files",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "categories": [],
+  "inputSpec": [
+    {
+      "name": "a",
+      "class": "file",
+      "patterns": ["*.bed", "*.bed.gz", "*.gff", "*.gff.gz", "*.gtf", "*.gtf.gz",
+                   "*.vcf", "*.vcf.gz", "*.bam"],
+      "optional": false
+    },
+    {
+      "name": "b",
+      "class": "file",
+      "patterns": ["*.bed", "*.bed.gz", "*.gff", "*.gff.gz", "*.gtf", "*.gtf.gz",
+                   "*.vcf", "*.vcf.gz"],
+      "optional": false
+    },
+    {
+      "name": "filename_insert",
+      "class": "string",
+      "optional": true,
+      "default": ".intersect"
+    },
+    {
+      "name": "advanced_options",
+      "class": "string",
+      "optional": true
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "result",
+      "class": "file"
+    }
+  ],
+  "runSpec": {
+    "interpreter": "bash",
+    "file": "src/bedtools_intersect.sh"
+  },
+  "authorizedUsers": []
+}
