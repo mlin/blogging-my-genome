@@ -1,0 +1,49 @@
+{
+  "name": "vcffilter",
+  "title": "vcffilter",
+  "summary": "vcffilter utility from vcflib",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "categories": [
+    "Variation Calling"
+  ],
+  "inputSpec": [
+    {
+      "name": "vcf",
+      "label": "VCF",
+      "class": "file",
+      "optional": false,
+      "patterns": ["*.vcf", "*.vcf.gz"]
+    },
+    {
+      "name": "info_filter",
+      "help": "Filters on info fields (e.g. \"DP > 10\")",
+      "class": "array:string",
+      "optional": true
+    },
+    {
+      "name": "genotype_filter",
+      "help": "Filters on genotype fields (e.g. \"GT = 1|1\")",
+      "class": "array:string",
+      "optional": true
+    },
+    {
+      "name": "advanced_options",
+      "help": "Advanced command line options to supply directly to vcffilter",
+      "class": "string",
+      "optional": true
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "filtered_vcfgz",
+      "label": "Filtered VCF bgzip",
+      "class": "file"
+    }
+  ],
+  "runSpec": {
+    "interpreter": "bash",
+    "file": "src/vcffilter.sh"
+  },
+  "authorizedUsers": []
+}
