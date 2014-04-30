@@ -11,8 +11,7 @@ keep$fixed <- c("ALT","QUAL")
 keep$info <- c("TYPE","AF")
 keep$geno <- c("GT","DP","RO","AO")
 vcf <- readVcf("/input.vcf.gz","hs37d5",ScanVcfParam(fixed=keep$fixed,info=keep$info,geno=keep$geno))
-chroms <- c(as.character(1:22),"X","Y")
-vcf <- keepSeqlevels(vcf,chroms)
+vcf <- keepSeqlevels(vcf,c(as.character(1:22),"X","Y"))
 
 cat("sites =", nrow(vcf), "alt. alleles =", sum(elementLengths(geno(vcf)$AO)))
 ```
@@ -49,7 +48,8 @@ ggplot(vd, aes(AO,QUAL)) + geom_bin2d(bins=64) + scale_fill_gradient(trans="sqrt
 Helper function to report metrics:
 
 ```{r}
-vcf.stats <- function(the.vcf) {
+vcf.stats <- function(chrom,the.vcf) {
+  cat("Metrics for", chrom, "\n")
   cat("biallelic sites =", nrow(the.vcf), "\n")
   
   qq <- quantile(qual(the.vcf), probs=c(0.5,0.1,0.05,0.01))
@@ -65,10 +65,10 @@ vcf.stats <- function(the.vcf) {
   snvs.het <- snvs & as.numeric(as.list(info(the.vcf)$AF)) == 0.5
   snvs.hom <- snvs & as.numeric(as.list(info(the.vcf)$AF)) == 1
   
-  cat("SNVs:", sum(snvs), "=", sum(snvs.het), "het +", sum(snvs.hom), "hom\n")
+  cat("SNVs:", sum(snvs), "=", sum(snvs.het), "het +", sum(snvs.hom), "hom", "... % het =", 100*sum(snvs.het)/(sum(snvs.hom)+sum(snvs.het)), "\n")
   
-  ref.nucs <- as.character(ref(the.vcf))[snvs]
-  alt.nucs <- as.character(unlist(alt(the.vcf)))[snvs]
+  ref.nucs <- toupper(as.character(ref(the.vcf))[snvs])
+  alt.nucs <- toupper(as.character(unlist(alt(the.vcf)))[snvs])
   transitions <- (sum(ref.nucs == 'A' & alt.nucs == 'G') + sum(ref.nucs == 'G' & alt.nucs == 'A')
                    + sum(ref.nucs == 'C' & alt.nucs == 'T') + sum(ref.nucs == 'T' & ref.nucs == 'C'))
   transversions <- (sum(ref.nucs == 'A' & alt.nucs == 'C') + sum(ref.nucs == 'C' & alt.nucs == 'A')
@@ -76,7 +76,7 @@ vcf.stats <- function(the.vcf) {
                    + sum(ref.nucs == 'C' & alt.nucs == 'G') + sum(ref.nucs == 'G' & ref.nucs == 'C')
                    + sum(ref.nucs == 'G' & alt.nucs == 'T') + sum(ref.nucs == 'T' & ref.nucs == 'G'))
   
-  cat("transitions =",transitions,"transversions =",transversions,"Ts/Tv =",transitions/transversions,"\n")
+  cat("transitions =",transitions,"transversions =",transversions,"Ts/Tv =",transitions/transversions,"\n\n")
 }
 ```
 
@@ -84,15 +84,25 @@ Compute the metrics over all biallelic sites:
 
 ```{r}
 vcf <- vcf[elementLengths(info(vcf)$TYPE) == 1]
-vcf.stats(vcf)
+vcf.stats("all biallelic sites",vcf)
 ```
 
-## Metrics by chromosome
+## Metrics for X, Y, and autosomes
 
 ```{r}
-for (i in 1:length(chroms)) {
-  cat("Statistics for",chroms[i],"\n")
-  vcf.stats(keepSeqlevels(vcf,chroms[i]))
-  cat("\n")
+vcf.stats("X",keepSeqlevels(vcf,"X"))
+vcf.stats("Y",keepSeqlevels(vcf,"Y"))
+vcf <- keepSeqlevels(vcf,c(as.character(1:22)))
+vcf.stats("autosomes",vcf)
+```
+
+
+## Metrics by autosome
+
+```{r}
+for (i in 1:22) {
+  ci <- as.character(i)
+  vcf.stats(ci,keepSeqlevels(vcf,ci))
 }
 ```
+
