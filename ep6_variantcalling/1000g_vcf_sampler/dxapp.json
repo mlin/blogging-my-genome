@@ -1,0 +1,43 @@
+{
+  "name": "1000g_vcf_sampler",
+  "title": "1000 Genomes VCF Sampler",
+  "summary": "Line-oriented downsampling of the 1000 Genomes Phase 2 genotype VCFs",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "categories": [],
+  "inputSpec": [
+    {
+      "name": "percentage",
+      "class": "float",
+      "default": 5.0,
+      "optional": false
+    },
+    {
+      "name": "autosomes_only",
+      "class": "boolean",
+      "default": false,
+      "optional": true
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "vcfgz",
+      "class": "file"
+    }
+  ],
+  "runSpec": {
+    "interpreter": "bash",
+    "file": "src/1000g_vcf_sampler.sh",
+    "systemRequirements": {
+      "main": {
+        "instanceType": "mem1_ssd1_x4"
+      }
+    }
+  },
+  "access": {
+    "network": [
+      "*"
+    ]
+  },
+  "authorizedUsers": []
+}

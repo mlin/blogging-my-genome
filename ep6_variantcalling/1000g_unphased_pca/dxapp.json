@@ -1,0 +1,60 @@
+{
+  "name": "1000g_unphased_pca",
+  "title": "1000G Unphased PCA",
+  "summary": "PCA visualization of an unphased WGS VCF with 1000 Genomes populations",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "your_vcf",
+      "class": "file",
+      "patterns": ["*.vcf.gz"],
+      "optional": false
+    },
+    {
+      "name": "your_name",
+      "class": "string",
+      "default": "Myself",
+      "optional": false
+    },
+    {
+      "name": "pop_vcf",
+      "class": "file",
+      "patterns": ["*.vcf.gz"],
+      "optional": false
+    },
+    {
+      "name": "Rlibs",
+      "class": "file",
+      "patterns": ["1000g_unphased_pca.Rlibs.tar.gz"],
+      "optional": true
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "figures",
+      "class": "array:file"
+    },
+    {
+      "name": "Rlibs",
+      "class": "file",
+      "optional": true
+    }
+  ],
+  "runSpec": {
+    "interpreter": "bash",
+    "file": "src/1000g_unphased_pca.sh",
+    "execDepends": [{"name": "dx-r-bindings"}, {"name": "libxml2-dev"}],
+    "systemRequirements": {
+      "main": {
+        "instanceType": "mem3_ssd1_x8"
+      }
+    }
+  },
+  "access": {
+    "network": [
+      "*"
+    ]
+  },
+  "authorizedUsers": []
+}

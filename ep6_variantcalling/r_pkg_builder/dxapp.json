@@ -1,0 +1,47 @@
+{
+  "name": "r_pkg_builder",
+  "title": "R Package Builder",
+  "summary": "Build tarball of R packages for embedding into applets",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "cran",
+      "class": "array:string",
+      "optional": true
+    },
+    {
+      "name": "bioconductor",
+      "class": "array:string",
+      "optional": true
+    },
+    {
+      "name": "apt",
+      "class": "array:string",
+      "optional": true
+    },
+    {
+      "name": "output_name",
+      "class": "string",
+      "default": "Rlibs.tar.gz",
+      "optional": true
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "Rlibs",
+      "class": "file"
+    }
+  ],
+  "runSpec": {
+    "interpreter": "bash",
+    "file": "src/r_pkg_builder.sh",
+    "execDepends": [{"name": "dx-r-bindings"}]
+  },
+  "access": {
+    "network": [
+      "*"
+    ]
+  },
+  "authorizedUsers": []
+}
