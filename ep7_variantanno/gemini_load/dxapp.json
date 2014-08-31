@@ -1,0 +1,43 @@
+{
+  "name": "gemini_load",
+  "title": "GEMINI Loader",
+  "summary": "gemini_load",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "categories": [
+    "Annotation"
+  ],
+  "inputSpec": [
+    {
+      "name": "vcfgz",
+      "class": "file",
+      "optional": false
+    },
+    {
+      "name": "advanced_options",
+      "class": "string",
+      "optional": true
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "dbgz",
+      "class": "file"
+    }
+  ],
+  "runSpec": {
+    "interpreter": "bash",
+    "file": "src/gemini_load.sh",
+    "systemRequirements": {
+      "main": {
+        "instanceType": "mem1_ssd1_x16"
+      }
+    }
+  },
+  "access": {
+    "network": [
+      "*"
+    ]
+  },
+  "authorizedUsers": []
+}
