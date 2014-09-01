@@ -11,11 +11,19 @@
     {
       "name": "vcfgz",
       "class": "file",
+      "patterns": ["*.vcf.gz"],
       "optional": false
+    },
+    {
+      "name": "vep",
+      "class": "boolean",
+      "help": "Run Variant Effect Predictor (VEP) on the VCF before gemini load",
+      "default": true
     },
     {
       "name": "advanced_options",
       "class": "string",
+      "help": "Command-line options passed directly to gemini load",
       "optional": true
     }
   ],
@@ -30,7 +38,7 @@
     "file": "src/gemini_load.sh",
     "systemRequirements": {
       "main": {
-        "instanceType": "mem1_ssd1_x16"
+        "instanceType": "mem3_ssd1_x16"
       }
     }
   },
