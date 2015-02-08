@@ -1,3 +1,15 @@
 [submodule "ep6_variantcalling/freebayes/upstream"]
 	path = ep6_variantcalling/freebayes/upstream
 	url = https://github.com/ekg/freebayes.git
+[submodule "wip/fermi2/upstream/fermi2"]
+	path = wip/fermi2/upstream/fermi2
+	url = https://github.com/lh3/fermi2.git
+[submodule "wip/fermi2/upstream/ropebwt2"]
+	path = wip/fermi2/upstream/ropebwt2
+	url = https://github.com/lh3/ropebwt2.git
+[submodule "wip/fermi2/upstream/bfc"]
+	path = wip/fermi2/upstream/bfc
+	url = https://github.com/lh3/bfc.git
+[submodule "wip/fermi2/upstream/seqtk"]
+	path = wip/fermi2/upstream/seqtk
+	url = git@github.com:lh3/seqtk.git

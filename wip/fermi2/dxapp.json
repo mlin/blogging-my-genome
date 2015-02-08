@@ -1,0 +1,59 @@
+{
+  "name": "fermi2_unitig",
+  "title": "fermi2_unitig",
+  "summary": "fermi2 is not in fact the successor to fermi",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "categories": [],
+  "inputSpec": [
+    {
+      "name": "reads",
+      "class": "array:file",
+      "patterns": ["*.fastq.gz", "*.fq.gz"],
+      "optional": false
+    },
+    {
+      "name": "genome_size",
+      "class": "int",
+      "optional": false,
+      "default": 3000000000
+    },
+    {
+      "name": "read_length",
+      "class": "int",
+      "optional": false,
+      "default": 101
+    },
+    {
+      "name": "output_name",
+      "help": "output filename prefix (inferred from input filename by default)",
+      "class": "string",
+      "optional": true
+    },
+    {
+      "name": "advanced_options",
+      "help": "command-line options passed directly to fermi2.pl",
+      "class": "string",
+      "optional": true
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "unitigs",
+      "class": "file"
+    },
+    {
+      "name": "fmd_index",
+      "class": "file"
+    },
+    {
+      "name": "logs",
+      "class": "file"
+    }
+  ],
+  "runSpec": {
+    "interpreter": "bash",
+    "file": "src/code.sh"
+  },
+  "authorizedUsers": []
+}
