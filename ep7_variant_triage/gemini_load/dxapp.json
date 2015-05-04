@@ -1,0 +1,51 @@
+{
+  "name": "gemini_load",
+  "title": "GEMINI Loader",
+  "summary": "gemini_load",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "categories": [
+    "Annotation"
+  ],
+  "inputSpec": [
+    {
+      "name": "vcfgz",
+      "class": "file",
+      "patterns": ["*.vcf.gz"],
+      "optional": false
+    },
+    {
+      "name": "vep",
+      "class": "boolean",
+      "help": "Run Variant Effect Predictor (VEP) on the VCF before gemini load",
+      "default": true
+    },
+    {
+      "name": "advanced_options",
+      "class": "string",
+      "help": "Command-line options passed directly to gemini load",
+      "optional": true
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "dbgz",
+      "class": "file"
+    }
+  ],
+  "runSpec": {
+    "interpreter": "bash",
+    "file": "src/gemini_load.sh",
+    "systemRequirements": {
+      "main": {
+        "instanceType": "mem3_ssd1_x16"
+      }
+    }
+  },
+  "access": {
+    "network": [
+      "*"
+    ]
+  },
+  "authorizedUsers": []
+}
