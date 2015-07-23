@@ -94,8 +94,8 @@ me.g[!is.na(kg.in.me) & (GT.in.me == "1/1" | GT.in.me == "1/1") & alt.is.ancestr
 me.g[!is.na(kg.in.me) & (GT.in.me == "1/1" | GT.in.me == "1/1") & !alt.is.ancestral] <- 2
 
 # PCA on G
-pca.selector <- rep(TRUE,nrow(G))
-#pca.selector <- pop == 'CHB' | pop == 'CHS' | pop == 'JPT'
+#pca.selector <- rep(TRUE,nrow(G))
+pca.selector <- pop == 'CHB' | pop == 'CHS' | pop == 'JPT'
 sum(pca.selector)
 pca.varying <- sapply(1:ncol(G), function(j) { var(G[pca.selector,j]) > 0 })
 sum(pca.varying)
@@ -113,13 +113,13 @@ pd <- data.frame(PC1=pca$x[,1], PC2=pca$x[,2], PC3=pca$x[,3], population=pca.pop
 popnames <- list(
   ASW='African-Amer',
   CEU='European',
-  CHB='Asian',
-  CHS='Asian',
+  CHB='Chinese, Beijing',
+  CHS='Chinese, Southern',
   CLM='Colombian',
   FIN='European',
   GBR='European',
   IBS='European',
-  JPT='Asian',
+  JPT='Japanese',
   MXL='Mexican-Amer',
   PUR='Puerto Ricans',
   TSI='European',
